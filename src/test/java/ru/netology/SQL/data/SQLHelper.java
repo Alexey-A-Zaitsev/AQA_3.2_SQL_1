@@ -38,7 +38,6 @@ public class SQLHelper {
         runner.execute(connection, "DELETE FROM auth_codes");
         runner.execute(connection, "DELETE FROM card_transactions");
         runner.execute(connection, "DELETE FROM cards");
-        runner.execute(connection, "DELETE FROM users");
     }
 
 
