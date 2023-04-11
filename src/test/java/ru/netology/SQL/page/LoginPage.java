@@ -1,9 +1,11 @@
 package ru.netology.SQL.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.Keys;
 import ru.netology.SQL.data.DataHelper;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -22,13 +24,21 @@ public class LoginPage {
         return new VerificationPage();
     }
 
-    public void emptyLogin () {
-        passwordField.setValue(DataHelper.generateRandomPassword());
+    public void inputInLoginField(String login) {
+        loginField.setValue(login);
+    }
+
+    public void inputInPasswordField(String password) {
+        passwordField.setValue(password);
+    }
+
+    public void emptyLogin (String password) {
+        passwordField.setValue(password);
         loginButton.click();
     }
 
-    public void emptyPassword () {
-        loginField.setValue(DataHelper.generateRandomLogin());
+    public void emptyPassword (String login) {
+        loginField.setValue(login);
         loginButton.click();
     }
 
@@ -57,8 +67,16 @@ public class LoginPage {
         passwordField.sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
     }
 
+    public void cleanLoginField() {
+        loginField.sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+    }
+
     public void setLoginField(DataHelper.AuthLogin login) {
         loginField.setValue(login.getLogin());
+    }
+
+    public void userBlockMessage() {
+        errorNotification.shouldHave(text("Пользователь заблокирован")).shouldBe(visible);
     }
 
 }

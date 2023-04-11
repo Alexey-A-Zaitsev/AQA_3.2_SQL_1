@@ -31,6 +31,15 @@ public class DataHelper {
     }
 
     @Value
+    public static class AuthPassword {
+        private String password;
+    }
+
+    public static AuthPassword getAuthPassword() {
+        return new AuthPassword("qwerty123");
+    }
+
+    @Value
     public static class VerificationCode {
         private String code;
     }

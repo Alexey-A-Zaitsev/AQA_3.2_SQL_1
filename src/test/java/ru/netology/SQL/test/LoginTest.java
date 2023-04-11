@@ -8,9 +8,6 @@ import ru.netology.SQL.data.DataHelper;
 import ru.netology.SQL.data.SQLHelper;
 import ru.netology.SQL.page.LoginPage;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
 public class LoginTest {
@@ -32,6 +29,30 @@ public class LoginTest {
     }
 
     @Test
+    @DisplayName("should get an error message if the login invalid")
+    void shouldErrorMessageIfLoginInvalid() {
+        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var authLogin = DataHelper.generateRandomLogin();
+        var authPass = DataHelper.getAuthPassword().getPassword();
+        loginPage.inputInLoginField(authLogin);
+        loginPage.inputInPasswordField(authPass);
+        loginPage.emptyFields(); // используем для клика по кнопке
+        loginPage.verifyErrorNotificationVisibility();
+    }
+
+    @Test
+    @DisplayName("should get an error message if the password invalid")
+    void shouldErrorMessageIfPasswordInvalid() {
+        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var authLogin = DataHelper.getAuthLogin().getLogin();
+        var authPass = DataHelper.generateRandomPassword();
+        loginPage.inputInLoginField(authLogin);
+        loginPage.inputInPasswordField(authPass);
+        loginPage.emptyFields(); // используем для клика по кнопке
+        loginPage.verifyErrorNotificationVisibility();
+    }
+
+    @Test
     @DisplayName("should get an error message if the user is not in the database")
     void shouldErrorMessageIfUserExist() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
@@ -44,7 +65,8 @@ public class LoginTest {
     @DisplayName("should get an error message if the field Login empty")
     void shouldErrorMessageIfLoginEmpty() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
-        loginPage.emptyLogin();
+        var authInfo = DataHelper.generateRandomPassword();
+        loginPage.emptyLogin(authInfo);
         loginPage.verifyErrorMessageLoginField();
     }
 
@@ -52,12 +74,13 @@ public class LoginTest {
     @DisplayName("should get an error message if the field Password empty")
     void shouldErrorMessageIfPasswordEmpty() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
-        loginPage.emptyPassword();
+        var authInfo = DataHelper.generateRandomLogin();
+        loginPage.emptyPassword(authInfo);
         loginPage.verifyErrorMessagePasswordField();
     }
 
     @Test
-    @DisplayName("should get an error messages if the fields empty")
+    @DisplayName("should get an error messages if the all fields empty")
     void shouldErrorMessageIfFieldsEmpty() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
         loginPage.emptyFields();
@@ -93,13 +116,16 @@ public class LoginTest {
     void shouldErrorMessageIfPasswordEnteredIncorrectlyThreeTimes() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
         var loginInfo = DataHelper.getAuthLogin();
+        var password1 = DataHelper.generateRandomPassword();
+        var password2 = DataHelper.generateRandomPassword();
+        var password3 = DataHelper.generateRandomPassword();
         loginPage.setLoginField(loginInfo);
-        loginPage.emptyLogin();
+        loginPage.emptyLogin(password1);
         loginPage.cleanPasswordField();
-        loginPage.emptyLogin();
+        loginPage.emptyLogin(password2);
         loginPage.cleanPasswordField();
-        loginPage.emptyLogin();
-        $("[data-test-id=error-notification]").shouldHave(text("Пользователь заблокирован")).shouldBe(visible);
+        loginPage.emptyLogin(password3);
+        loginPage.userBlockMessage();
     }
 
 }
