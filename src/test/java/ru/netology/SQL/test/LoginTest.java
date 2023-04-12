@@ -66,6 +66,7 @@ public class LoginTest {
     void shouldErrorMessageIfLoginEmpty() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
         var authInfo = DataHelper.generateRandomPassword();
+        loginPage.cleanLoginField();
         loginPage.emptyLogin(authInfo);
         loginPage.verifyErrorMessageLoginField();
     }
@@ -75,6 +76,7 @@ public class LoginTest {
     void shouldErrorMessageIfPasswordEmpty() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
         var authInfo = DataHelper.generateRandomLogin();
+        loginPage.cleanPasswordField();
         loginPage.emptyPassword(authInfo);
         loginPage.verifyErrorMessagePasswordField();
     }
@@ -116,15 +118,14 @@ public class LoginTest {
     void shouldErrorMessageIfPasswordEnteredIncorrectlyThreeTimes() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
         var loginInfo = DataHelper.getAuthLogin();
-        var password1 = DataHelper.generateRandomPassword();
-        var password2 = DataHelper.generateRandomPassword();
-        var password3 = DataHelper.generateRandomPassword();
+        var password = DataHelper.generateRandomPassword();
         loginPage.setLoginField(loginInfo);
-        loginPage.emptyLogin(password1);
+
+        loginPage.emptyLogin(password);
         loginPage.cleanPasswordField();
-        loginPage.emptyLogin(password2);
+        loginPage.emptyLogin(password);
         loginPage.cleanPasswordField();
-        loginPage.emptyLogin(password3);
+        loginPage.emptyLogin(password);
         loginPage.userBlockMessage();
     }
 
